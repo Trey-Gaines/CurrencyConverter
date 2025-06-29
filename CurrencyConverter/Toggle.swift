@@ -8,17 +8,18 @@ import SwiftUI
 import Observation
 
 struct customToggle: View {
-    @State var isOn: Bool = false
+    @Binding var curr: Bool
+    @State var shortHand: String
     @State var systemImageLight: String
     @State var systemImageDark: String
     
     var body: some View {
         Button {
             withAnimation(.spring()) {
-                isOn.toggle()
+                curr.toggle()
             }
         } label: {
-            if !isOn {
+            if !curr {
                 ZStack {
                     Capsule()
                         .frame(width:80,height:44)
@@ -34,6 +35,10 @@ struct customToggle: View {
                     .shadow(color: .black.opacity(0.14), radius: 4, x: 0, y: 2)
                     .offset(x:-18)
                     .padding(24)
+                    Text(shortHand)
+                        .font(.caption)
+                        .foregroundStyle(.white)
+                        .offset(x:18)
                 }
             } else {
                 ZStack {
@@ -50,14 +55,13 @@ struct customToggle: View {
                     .shadow(color: .black.opacity(0.14), radius: 4, x: 0, y: 2)
                     .offset(x:18)
                     .padding(24)
-                    
+                    Text(shortHand)
+                        .font(.caption)
+                        .foregroundStyle(.white)
+                        .offset(x:-18)
                 }
             }
         }
     }
 }
 
-
-#Preview {
-    customToggle(systemImageLight: "eurosign.circle", systemImageDark: "eurosign.circle.fill")
-}

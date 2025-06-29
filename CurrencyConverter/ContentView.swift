@@ -9,8 +9,12 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
-    @State var euroSelected = false
+    @State var myCurrency = Currency()
     @State var usdAmount = ""
+    
+    
+    var isReady: Bool { return usdAmount == ""  }
+    
     var body: some View {
         NavigationStack {
             Spacer()
@@ -28,6 +32,7 @@ struct ContentView: View {
                                 let filtered = newValue.filter { "0123456789".contains($0) }
                                 if filtered != newValue {
                                     self.usdAmount = filtered
+                                    myCurrency.value = Int(self.usdAmount) ?? 0
                                 }
                             }
             }
@@ -35,15 +40,15 @@ struct ContentView: View {
             Spacer()
             Grid {
                 GridRow {
-                    customToggle(systemImageLight: "", systemImageDark: "")
-                    customToggle(systemImageLight: "", systemImageDark: "")
-                    customToggle(systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $myCurrency.toEuro, shortHand: "EUR", systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $myCurrency.toGBP, shortHand: "GBP", systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $myCurrency.toCHF, shortHand: "CHF", systemImageLight: "", systemImageDark: "")
                 }
                 
                 GridRow {
-                    customToggle(systemImageLight: "", systemImageDark: "")
-                    customToggle(systemImageLight: "", systemImageDark: "")
-                    customToggle(systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $myCurrency.toJPY, shortHand: "JPY", systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $myCurrency.toCAD, shortHand: "CAD", systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $myCurrency.toAUD, shortHand: "AUD", systemImageLight: "", systemImageDark: "")
                 }
             }
             Button {
@@ -56,7 +61,7 @@ struct ContentView: View {
                     .background {
                         RoundedRectangle(cornerRadius: 25)
                     }
-            }
+            }.disabled(isReady)
             
             .navigationTitle("Curreny Converter")
             .navigationBarTitleDisplayMode(.inline)

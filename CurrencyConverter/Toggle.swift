@@ -13,6 +13,10 @@ struct customToggle: View {
     @State var systemImageLight: String
     @State var systemImageDark: String
     
+    var myColor: Color {
+        .init(red: 59/255, green: 59/255, blue: 59/255)
+    }
+    
     var body: some View {
         Button {
             withAnimation(.spring()) {
@@ -23,7 +27,7 @@ struct customToggle: View {
                 ZStack {
                     Capsule()
                         .frame(width:80,height:44)
-                        .foregroundColor(.gray)
+                        .foregroundColor(myColor)
                     ZStack{
                         Circle()
                             .frame(width:40, height:40)

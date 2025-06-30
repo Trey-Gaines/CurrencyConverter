@@ -9,11 +9,18 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
-    @State var myCurrency = Currency()
+    @State var curr = Currency()
     @State var usdAmount = ""
+    let mySet = Set("0123456789")
+    let myColors = Color.getRandomColor()
     
     
-    var isReady: Bool { return usdAmount == ""  }
+    var convertTo: Bool {
+        if curr.toRUB || curr.toEUR || curr.toGBP || curr.toJPY || curr.toWON || curr.toSEK { return false } else { return true }
+    }
+    
+    var notEmpty: Bool { usdAmount == "" }
+    
     
     var body: some View {
         NavigationStack {
@@ -29,31 +36,35 @@ struct ContentView: View {
                             .keyboardType(.numberPad)
                             .textFieldStyle(.roundedBorder)
                             .onReceive(Just(usdAmount)) { newValue in
-                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                let filtered = newValue.filter { mySet.contains($0) }
                                 if filtered != newValue {
                                     self.usdAmount = filtered
-                                    myCurrency.value = Int(self.usdAmount) ?? 0
+
                                 }
+                            }
+                            .onChange(of: usdAmount) {
+                                _, _ in curr.value = Int(usdAmount) ?? 0
                             }
             }
             
             Spacer()
             Grid {
                 GridRow {
-                    customToggle(curr: $myCurrency.toEuro, shortHand: "EUR", systemImageLight: "", systemImageDark: "")
-                    customToggle(curr: $myCurrency.toGBP, shortHand: "GBP", systemImageLight: "", systemImageDark: "")
-                    customToggle(curr: $myCurrency.toCHF, shortHand: "CHF", systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $curr.toEUR, shortHand: curr.eurName, systemImageLight: curr.eurLight, systemImageDark: curr.eurDark)
+                    customToggle(curr: $curr.toGBP, shortHand: curr.gbpName, systemImageLight: curr.gbpLight, systemImageDark: curr.gbpDark)
+                    customToggle(curr: $curr.toRUB, shortHand: curr.rubName, systemImageLight: curr.rubLight, systemImageDark: curr.rubDark)
                 }
+                
                 
                 GridRow {
-                    customToggle(curr: $myCurrency.toJPY, shortHand: "JPY", systemImageLight: "", systemImageDark: "")
-                    customToggle(curr: $myCurrency.toCAD, shortHand: "CAD", systemImageLight: "", systemImageDark: "")
-                    customToggle(curr: $myCurrency.toAUD, shortHand: "AUD", systemImageLight: "", systemImageDark: "")
+                    customToggle(curr: $curr.toJPY, shortHand: curr.jpyName, systemImageLight: curr.jpyLight, systemImageDark: curr.jpyDark)
+                    customToggle(curr: $curr.toWON, shortHand: curr.wonName, systemImageLight: curr.wonLight, systemImageDark: curr.wonDark)
+                    customToggle(curr: $curr.toSEK, shortHand: curr.sekName, systemImageLight: curr.sekLight, systemImageDark: curr.sekDark)
                 }
-            }
-            Button {
                 
-            } label: {
+            }
+            
+            NavigationLink(destination: Converted(curr: curr, myColors: myColors)) {
                 Text("Convert")
                     .foregroundStyle(.white)
                     .fontWeight(.semibold)
@@ -61,8 +72,8 @@ struct ContentView: View {
                     .background {
                         RoundedRectangle(cornerRadius: 25)
                     }
-            }.disabled(isReady)
-            
+            }.disabled(convertTo).disabled(notEmpty)
+                
             .navigationTitle("Curreny Converter")
             .navigationBarTitleDisplayMode(.inline)
         }

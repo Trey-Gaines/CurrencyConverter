@@ -11,11 +11,15 @@ import Combine
 struct ContentView: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
-
+    
     @State var curr = Currency()
     @State var usdAmount = ""
+    @State var showAlert = false
     let mySet = Set("0123456789")
     let myColors = Color.getRandomColor()
+    
+    var isValid: Bool { Set(usdAmount).isSubset(of: mySet) }
+    
     
     
     var convertTo: Bool {
@@ -36,18 +40,17 @@ struct ContentView: View {
                 
                 TextField("Enter USD", text: $usdAmount)
                     .multilineTextAlignment(.center)
-                            .keyboardType(.numberPad)
-                            .textFieldStyle(.roundedBorder)
-                            .onReceive(Just(usdAmount)) { newValue in
-                                let filtered = newValue.filter { mySet.contains($0) }
-                                if filtered != newValue {
-                                    self.usdAmount = filtered
-
-                                }
-                            }
-                            .onChange(of: usdAmount) {
-                                _, _ in curr.value = Int(usdAmount) ?? 0
-                            }
+                    .keyboardType(.numberPad)
+                    .textFieldStyle(.roundedBorder)
+                    .onReceive(Just(usdAmount)) { newValue in
+                        let filtered = newValue.filter { mySet.contains($0) }
+                        if filtered != newValue {
+                            self.usdAmount = filtered
+                        }
+                    }
+                    .onChange(of: usdAmount) {
+                        _, _ in curr.value = Int(usdAmount) ?? 0
+                    }
             }
             
             Spacer()
@@ -88,10 +91,17 @@ struct ContentView: View {
                     .background {
                         RoundedRectangle(cornerRadius: 25)
                     }
-            }.disabled(convertTo).disabled(notEmpty)
-                
-            .navigationTitle("Curreny Converter")
-            .navigationBarTitleDisplayMode(.inline)
+            }.disabled(convertTo).disabled(notEmpty).disabled(!isValid)
+            
+                .navigationTitle("Curreny Converter")
+                .navigationBarTitleDisplayMode(.inline)
+                .onChange(of: isValid) { oldValue, newValue in
+                    if !isValid { showAlert = true; self.usdAmount = "" }
+                }
+                .alert("Not a valid number", isPresented: $showAlert, actions: {
+                        }, message: {
+                            Text("Please try again only with integers")
+                        })
         }
         .padding()
     }

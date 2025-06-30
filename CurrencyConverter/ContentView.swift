@@ -9,6 +9,9 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
+
     @State var curr = Currency()
     @State var usdAmount = ""
     let mySet = Set("0123456789")
@@ -49,17 +52,30 @@ struct ContentView: View {
             
             Spacer()
             Grid {
-                GridRow {
-                    customToggle(curr: $curr.toEUR, shortHand: curr.eurName, systemImageLight: curr.eurLight, systemImageDark: curr.eurDark)
-                    customToggle(curr: $curr.toGBP, shortHand: curr.gbpName, systemImageLight: curr.gbpLight, systemImageDark: curr.gbpDark)
-                    customToggle(curr: $curr.toRUB, shortHand: curr.rubName, systemImageLight: curr.rubLight, systemImageDark: curr.rubDark)
-                }
-                
-                
-                GridRow {
-                    customToggle(curr: $curr.toJPY, shortHand: curr.jpyName, systemImageLight: curr.jpyLight, systemImageDark: curr.jpyDark)
-                    customToggle(curr: $curr.toWON, shortHand: curr.wonName, systemImageLight: curr.wonLight, systemImageDark: curr.wonDark)
-                    customToggle(curr: $curr.toSEK, shortHand: curr.sekName, systemImageLight: curr.sekLight, systemImageDark: curr.sekDark)
+                if UIDevice.current.userInterfaceIdiom == .pad || (UIDevice.current.userInterfaceIdiom == .phone && horizontalSizeClass == .compact && verticalSizeClass == .regular) {
+                    GridRow {
+                        customToggle(curr: $curr.toEUR, shortHand: curr.eurName, systemImageLight: curr.eurLight, systemImageDark: curr.eurDark)
+                        customToggle(curr: $curr.toGBP, shortHand: curr.gbpName, systemImageLight: curr.gbpLight, systemImageDark: curr.gbpDark)
+                        customToggle(curr: $curr.toRUB, shortHand: curr.rubName, systemImageLight: curr.rubLight, systemImageDark: curr.rubDark)
+                    }
+                    
+                    
+                    GridRow {
+                        customToggle(curr: $curr.toJPY, shortHand: curr.jpyName, systemImageLight: curr.jpyLight, systemImageDark: curr.jpyDark)
+                        customToggle(curr: $curr.toWON, shortHand: curr.wonName, systemImageLight: curr.wonLight, systemImageDark: curr.wonDark)
+                        customToggle(curr: $curr.toSEK, shortHand: curr.sekName, systemImageLight: curr.sekLight, systemImageDark: curr.sekDark)
+                    }
+                } else {
+                    GridRow {
+                        customToggle(curr: $curr.toEUR, shortHand: curr.eurName, systemImageLight: curr.eurLight, systemImageDark: curr.eurDark)
+                        customToggle(curr: $curr.toGBP, shortHand: curr.gbpName, systemImageLight: curr.gbpLight, systemImageDark: curr.gbpDark)
+                        customToggle(curr: $curr.toRUB, shortHand: curr.rubName, systemImageLight: curr.rubLight, systemImageDark: curr.rubDark)
+                        customToggle(curr: $curr.toJPY, shortHand: curr.jpyName, systemImageLight: curr.jpyLight, systemImageDark: curr.jpyDark)
+                        customToggle(curr: $curr.toWON, shortHand: curr.wonName, systemImageLight: curr.wonLight, systemImageDark: curr.wonDark)
+                        customToggle(curr: $curr.toSEK, shortHand: curr.sekName, systemImageLight: curr.sekLight, systemImageDark: curr.sekDark)
+                    }
+                    
+                    
                 }
                 
             }

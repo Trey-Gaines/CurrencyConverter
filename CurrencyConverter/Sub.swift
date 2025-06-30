@@ -15,6 +15,10 @@ struct Tile: View {
     @State var currencySymbol: String
     @State var color: Color
     
+    var baseConverted: String {
+        base.formatted(.number.precision(.fractionLength(0)))
+    }
+    
     
     var body: some View {
         ZStack {
@@ -45,6 +49,8 @@ struct Tile: View {
                         Text(value, format: .number.grouping(.automatic))
                             .font(.largeTitle)
                             .fontWeight(.bold)
+                            .minimumScaleFactor(0.01)
+                            .lineLimit(1)
                         Text("\(currencySign)")
                             .fontWeight(.semibold)
                             .font(.title2)
@@ -55,19 +61,16 @@ struct Tile: View {
                         Text(value, format: .number.grouping(.automatic))
                             .font(.largeTitle)
                             .fontWeight(.bold)
+                            .minimumScaleFactor(0.01)
+                            .lineLimit(1)
                     }
                 }
                 Spacer()
                 Spacer()
-                HStack {
-                    Text("$")
-                        .padding(.trailing, 0)
-                        .font(.caption)
-                    Text(base, format: .number.grouping(.automatic))
-                        .font(.caption)
-                        .padding(.leading, 0)
-                        .fontWeight(.semibold)
-                }
+                Text("$ \(baseConverted)")
+                    .font(.caption)
+                    .padding(.leading, 0)
+                    .fontWeight(.semibold)
             }
             .padding()
             .frame(height: 150)

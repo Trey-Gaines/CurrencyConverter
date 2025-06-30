@@ -10,6 +10,8 @@ struct Converted: View {
     @State var curr: Currency
     @State var myColors: [Color]
     
+   
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -36,8 +38,9 @@ struct Converted: View {
                 if curr.toWON {
                     Tile(base: curr.value, value: curr.won, currency: curr.wonName, currencySign: curr.wonSign, isBehind: curr.wonAfter, currencySymbol: curr.wonLight, color: myColors[5])
                 }
-            }.safeAreaPadding(.vertical, 15)
+            }
                 .ignoresSafeArea(.all, edges: .bottom)
+                .safeAreaPadding(.vertical, 15)
                 .navigationTitle(Text("Currencies"))
                 .navigationBarTitleDisplayMode(.inline)
                 
